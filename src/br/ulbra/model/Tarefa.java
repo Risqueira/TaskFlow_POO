@@ -46,7 +46,7 @@ public class Tarefa {
         this.descricao = descricao;
         this.status = status;
         this.usuario = usuario;
-        this.prazoSql = Date.valueOf(prazo);
+        
     }
 
     public int getId_tarefa() {

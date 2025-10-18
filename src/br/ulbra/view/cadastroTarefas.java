@@ -36,19 +36,21 @@ public class cadastroTarefas extends javax.swing.JFrame {
         initComponents();
         controller = new TarefaController();
         this.setLocationRelativeTo(null);
+        carregarUsuarios();
         initTableModel();
         atualizarTabela();
         setBotoes(0);
-        carregarUsuarios();
+        cbResponsavel.setSelectedIndex(-1);
     }
 
     private void limparCampos() {
         txtId.setText(null);
-        txtDescricao.setText(null);
+        txtNome.setText(null);
         txtDescricao.setText(null);
         cbPrioridade.setSelectedItem(null);
         cbStatus.setSelectedItem(null);
         dcPrazo.setDate(null);
+        cbResponsavel.setSelectedIndex(-1);
     }
 
     private TarefaController controller;
@@ -82,7 +84,7 @@ public class cadastroTarefas extends javax.swing.JFrame {
     private void initTableModel() {
         javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel(
                 new Object[][]{},
-                new String[]{"ID", "Título", "Descrição", "Status", "Responsável"}
+                new String[]{"ID", "Título", "Descrição", "Prioridade", "Status", "Prazo", "Responsável"}
         ) {
             @Override
             public boolean isCellEditable(int row, int col) {
@@ -93,14 +95,21 @@ public class cadastroTarefas extends javax.swing.JFrame {
     }
 
     private void atualizarTabela() {
+
         try {
             javax.swing.table.DefaultTableModel modelTbl = (javax.swing.table.DefaultTableModel) tblTarefas.getModel();
+
             modelTbl.setRowCount(0);
+
             java.util.List<Tarefa> lista = controller.listar();
+
             for (Tarefa t : lista) {
-                modelTbl.addRow(new Object[]{t.getId_tarefa(), t.getTitulo(), t.getDescricao(), t.getStatus(), t.getUsuario().getNome()});
+                modelTbl.addRow(new Object[]{t.getId_tarefa(), t.getTitulo(), t.getDescricao(), t.getPrioridade(), t.getStatus(), t.getPrazo(), t.getUsuario().getNome()});
+
             }
         } catch (Exception ex) {
+            ex.printStackTrace();
+            javax.swing.JOptionPane.showMessageDialog(this, "Aqui" + ex.getMessage());
 
         }
     }
@@ -157,8 +166,8 @@ public class cadastroTarefas extends javax.swing.JFrame {
         btnDeletar = new javax.swing.JButton();
         btnLimpar = new javax.swing.JButton();
         cbResponsavel = new javax.swing.JComboBox<>();
-        dcPrazo = new com.toedter.calendar.JDateChooser();
         txtNome = new javax.swing.JTextField();
+        dcPrazo = new com.toedter.calendar.JDateChooser();
 
         jPasswordField1.setText("jPasswordField1");
 
@@ -168,12 +177,17 @@ public class cadastroTarefas extends javax.swing.JFrame {
 
         tblTarefas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null}
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Id", "Titulo", "Descricao", "status", "Usuario"
+                "Id", "Titulo", "Descricao", "Prioridade", "status", "Prazo", "Responsável"
             }
         ));
+        tblTarefas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblTarefasMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(tblTarefas);
 
         jLabel3.setText("Codigo");
@@ -304,13 +318,12 @@ public class cadastroTarefas extends javax.swing.JFrame {
                                 .addComponent(jLabel3)
                                 .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                            .addComponent(btnLimpar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(cbResponsavel, 0, 210, Short.MAX_VALUE))
-                                        .addComponent(dcPrazo, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(btnLimpar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(cbResponsavel, 0, 210, Short.MAX_VALUE)
+                                        .addComponent(dcPrazo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -355,15 +368,13 @@ public class cadastroTarefas extends javax.swing.JFrame {
                         .addComponent(txtDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel9)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(dcPrazo, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel8)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(cbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(35, 35, 35)
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel9))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(cbStatus, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
+                            .addComponent(dcPrazo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(40, 40, 40)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel6)
@@ -412,7 +423,42 @@ public class cadastroTarefas extends javax.swing.JFrame {
     }//GEN-LAST:event_cbPrioridadeActionPerformed
 
     private void btnAlterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlterarActionPerformed
-        // TODO add your handling code here:
+        int idUsuario = 0;
+        String nomeU = "";
+        int indice = cbResponsavel.getSelectedIndex();
+
+        if (indice >= 0) {
+            Usuario usuario = listaUsuarios.get(indice);
+            idUsuario = usuario.getId_usuario();
+            nomeU = usuario.getNome();
+        }
+        JOptionPane.showMessageDialog(null, idUsuario);
+
+        try {
+            int idtarefa = Integer.parseInt(txtId.getText());
+            String nome = txtNome.getText().trim();
+            String descricao = txtDescricao.getText().trim();
+            Date prazoT = dcPrazo.getDate();
+            //Vamo xiruzão
+            LocalDate prazo = prazoT.toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+            String status = cbStatus.getSelectedItem().toString();
+            String prioridade = cbPrioridade.getSelectedItem().toString();
+            Usuario u = new Usuario(idUsuario, nomeU);
+            System.out.println(u.getId_usuario());
+            Tarefa t = new Tarefa(idtarefa, nome, descricao, prioridade, status, prazo, u);
+            controller.atualizar(t);
+            javax.swing.JOptionPane.showMessageDialog(this, "Atualizado com sucesso");
+            atualizarTabela();
+            limparCampos();
+        } catch (NumberFormatException nfe) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Selecione uma tarefa para atualizar");
+        } catch (Exception ex) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Erro ao atualizar: " + ex.getMessage());
+            ex.printStackTrace();
+        }
+        
     }//GEN-LAST:event_btnAlterarActionPerformed
 
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
@@ -428,7 +474,7 @@ public class cadastroTarefas extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(null, idUsuario);
 
         try {
-            boolean ativo = false;
+
             String nome = txtNome.getText().trim();
             String descricao = txtDescricao.getText().trim();
             Date prazoT = dcPrazo.getDate();
@@ -440,15 +486,16 @@ public class cadastroTarefas extends javax.swing.JFrame {
             String prioridade = cbPrioridade.getSelectedItem().toString();
             Usuario u = new Usuario(idUsuario, nomeU);
             if (nome.isEmpty()) {
-                javax.swing.JOptionPane.showMessageDialog(this, "Nome é obrigatório");
+                javax.swing.JOptionPane.showMessageDialog(this, "Título é obrigatório");
                 return;
             }
-            Tarefa t = new Tarefa(idUsuario, nome, descricao, prioridade, status, prazo, u);
+            Tarefa t = new Tarefa(0, nome, descricao, prioridade, status, prazo, u);
             controller.salvar(t);
+
             javax.swing.JOptionPane.showMessageDialog(this, "Cadastrado com sucesso");
             atualizarTabela();
             limparCampos();
-            javax.swing.JOptionPane.showMessageDialog(this, "Tarefa salvo (ID=" + t.getId_tarefa() + ")");
+            javax.swing.JOptionPane.showMessageDialog(this, "Tarefa salva (ID=" + t.getId_tarefa() + ")");
             //atualizarTabela();
             // limparCampos();
         } catch (Exception ex) {
@@ -460,11 +507,28 @@ public class cadastroTarefas extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCadastrarActionPerformed
 
     private void btnDeletarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeletarActionPerformed
-
+        try {
+            int id = Integer.parseInt(txtId.getText());
+            int confirm = javax.swing.JOptionPane.showConfirmDialog(this, "Remover Tarefa ID " + id
+                    + "?", "Confirma", javax.swing.JOptionPane.YES_NO_OPTION);
+            if (confirm != javax.swing.JOptionPane.YES_OPTION) {
+                return;
+            }
+            controller.remover(id);
+            javax.swing.JOptionPane.showMessageDialog(this, "Removido");
+            atualizarTabela();
+            limparCampos();
+        } catch (NumberFormatException nfe) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Selecione uma tarefa para remover");
+        } catch (Exception ex) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Erro ao remover: " + ex.getMessage());
+        }
+        setBotoes(0);
     }//GEN-LAST:event_btnDeletarActionPerformed
 
     private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
-
+        limparCampos();
+        setBotoes(0);
     }//GEN-LAST:event_btnLimparActionPerformed
 
     private void cbResponsavelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbResponsavelActionPerformed
@@ -474,6 +538,27 @@ public class cadastroTarefas extends javax.swing.JFrame {
     private void txtNomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNomeActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNomeActionPerformed
+
+    private void tblTarefasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblTarefasMouseClicked
+        int row = tblTarefas.getSelectedRow();
+        if (row >= 0) {
+            txtId.setText(tblTarefas.getValueAt(row, 0).toString());
+            txtNome.setText(tblTarefas.getValueAt(row, 1).toString());
+            txtDescricao.setText(tblTarefas.getValueAt(row, 2).toString());
+            cbPrioridade.setSelectedItem(tblTarefas.getValueAt(row, 3).toString());
+            cbStatus.setSelectedItem(tblTarefas.getValueAt(row, 4).toString());
+            Object dataObj = tblTarefas.getValueAt(row, 5);
+            java.util.Date data;
+            LocalDate localDate = (LocalDate) dataObj;
+            data = java.util.Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+            dcPrazo.setDate(data);
+
+            cbResponsavel.setSelectedItem(tblTarefas.getValueAt(row, 6));
+
+        }
+        atualizarTabela();
+        setBotoes(1);
+    }//GEN-LAST:event_tblTarefasMouseClicked
 
     /**
      * @param args the command line arguments

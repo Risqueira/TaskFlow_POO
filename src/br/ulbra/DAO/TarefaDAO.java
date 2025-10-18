@@ -79,7 +79,7 @@ public class TarefaDAO extends AbstractDAO implements CrudRepository<Tarefa> {
 
     @Override
     public List<Tarefa> listar() throws SQLException {
-        String sql = "SELECT  t.idtarefa, t.titulo, t.descricao, t.status, u.idusuario, u.nome FROM tarefa t "
+        String sql = "SELECT  t.idtarefa, t.titulo, t.descricao,t.prioridade, t.status,t.prazo, u.idusuario, u.nome FROM tarefa t "
                 + "INNER JOIN usuario u ON t.idusuario = u.idusuario "
                 + "ORDER BY t.titulo";
 
@@ -90,12 +90,17 @@ public class TarefaDAO extends AbstractDAO implements CrudRepository<Tarefa> {
                 ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                Usuario u = new Usuario();
+                Usuario u = new Usuario(
+                        rs.getInt("idusuario"),
+                        rs.getString("nome")
+                );
                 Tarefa t = new Tarefa(
                         rs.getInt("idtarefa"),
                         rs.getString("titulo"),
                         rs.getString("descricao"),
+                        rs.getString("prioridade"),
                         rs.getString("status"),
+                        rs.getDate("prazo").toLocalDate(),
                         u
                 );
                 lista.add(t);
@@ -106,7 +111,7 @@ public class TarefaDAO extends AbstractDAO implements CrudRepository<Tarefa> {
 
     @Override
     public void atualizar(Tarefa t) throws SQLException {
-        String sql = "UPDATE tarefa SET titulo = ?, descricao=? ,prioridade = ?, status = ?, idusuario = ? WHERE id = ?";
+        String sql = "UPDATE tarefa SET titulo = ?, descricao=? ,prioridade = ?, status = ?,prazo = ?, idusuario = ? WHERE idtarefa = ?";
         try (Connection con = getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -114,15 +119,16 @@ public class TarefaDAO extends AbstractDAO implements CrudRepository<Tarefa> {
             ps.setString(2, t.getDescricao());
             ps.setString(3, t.getPrioridade());
             ps.setString(4, t.getStatus());
-            ps.setInt(5, t.getUsuario().getId_usuario());
-
+            ps.setDate(5, t.getPrazoSql());
+            ps.setInt(6, t.getUsuario().getId_usuario());
+            ps.setInt(7, t.getId_tarefa());
             ps.executeUpdate();
         }
     }
 
     @Override
     public void remover(int id) throws SQLException {
-        String sql = "DELETE FROM tarefa WHERE id = ?";
+        String sql = "DELETE FROM tarefa WHERE idtarefa = ?";
         try (Connection con = getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);

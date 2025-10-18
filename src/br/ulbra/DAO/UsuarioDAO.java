@@ -49,7 +49,7 @@ public class UsuarioDAO extends AbstractDAO implements CrudRepository<Usuario> {
 
     @Override
     public Usuario buscarPorId(int id) throws SQLException {
-        String sql = "SELECT idusuario, nome, email ,cargo, senha FROM usuario WHERE idfor = ?";
+        String sql = "SELECT idusuario, nome, email ,cargo, senha FROM usuario WHERE idusuario = ?";
         try (Connection con = getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
