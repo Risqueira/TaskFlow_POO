@@ -77,6 +77,39 @@ public class TarefaDAO extends AbstractDAO implements CrudRepository<Tarefa> {
         return null;
     }
 
+    public List<Tarefa> listarOrdemPrioridade() throws SQLException {
+        String sql = "SELECT  t.idtarefa, t.titulo, t.descricao,t.prioridade, t.status,t.prazo, u.idusuario, u.nome FROM tarefa t "
+                + "INNER JOIN usuario u ON t.idusuario = u.idusuario "
+                + "ORDER BY FIELD(prioridade, 'Alta', 'Média', 'Baixa');";
+
+        List<Tarefa> lista = new ArrayList<>();
+
+        try (Connection con = getConnection();
+                PreparedStatement ps = con.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Usuario u = new Usuario(
+                        rs.getInt("idusuario"),
+                        rs.getString("nome")
+                );
+                Tarefa t = new Tarefa(
+                        rs.getInt("idtarefa"),
+                        rs.getString("titulo"),
+                        rs.getString("descricao"),
+                        rs.getString("prioridade"),
+                        rs.getString("status"),
+                        rs.getDate("prazo").toLocalDate(),
+                        u
+                );
+                lista.add(t);
+            }
+        }
+        return lista;
+    }
+    
+    
+    
     @Override
     public List<Tarefa> listar() throws SQLException {
         String sql = "SELECT  t.idtarefa, t.titulo, t.descricao,t.prioridade, t.status,t.prazo, u.idusuario, u.nome FROM tarefa t "

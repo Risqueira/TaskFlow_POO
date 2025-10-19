@@ -113,6 +113,26 @@ public class cadastroTarefas extends javax.swing.JFrame {
 
         }
     }
+    
+    private void atualizarTabelaOrdemPrioridade() {
+
+        try {
+            javax.swing.table.DefaultTableModel modelTbl = (javax.swing.table.DefaultTableModel) tblTarefas.getModel();
+
+            modelTbl.setRowCount(0);
+
+            java.util.List<Tarefa> lista = controller.listarOrdemPrioridade();
+
+            for (Tarefa t : lista) {
+                modelTbl.addRow(new Object[]{t.getId_tarefa(), t.getTitulo(), t.getDescricao(), t.getPrioridade(), t.getStatus(), t.getPrazo(), t.getUsuario().getNome()});
+
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            javax.swing.JOptionPane.showMessageDialog(this, "Aqui" + ex.getMessage());
+
+        }
+    }
 
     public void setBotoes(int op) {
         switch (op) {
@@ -168,6 +188,8 @@ public class cadastroTarefas extends javax.swing.JFrame {
         cbResponsavel = new javax.swing.JComboBox<>();
         txtNome = new javax.swing.JTextField();
         dcPrazo = new com.toedter.calendar.JDateChooser();
+        btnListarPrioridade = new javax.swing.JButton();
+        btnListarAlfabetica = new javax.swing.JButton();
 
         jPasswordField1.setText("jPasswordField1");
 
@@ -298,6 +320,20 @@ public class cadastroTarefas extends javax.swing.JFrame {
             }
         });
 
+        btnListarPrioridade.setText("Listar Prioridade");
+        btnListarPrioridade.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnListarPrioridadeActionPerformed(evt);
+            }
+        });
+
+        btnListarAlfabetica.setText("Listar Alfabética");
+        btnListarAlfabetica.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnListarAlfabeticaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -335,12 +371,16 @@ public class cadastroTarefas extends javax.swing.JFrame {
                                             .addComponent(cbStatus, 0, 203, Short.MAX_VALUE)))))
                             .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 451, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(btnCadastrar, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnDeletar, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 575, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(btnDeletar, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnListarPrioridade, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnListarAlfabetica, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 575, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(28, 28, 28))))
         );
         jPanel1Layout.setVerticalGroup(
@@ -355,7 +395,9 @@ public class cadastroTarefas extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnDeletar, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnCadastrar, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnCadastrar, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnListarPrioridade, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnListarAlfabetica, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(11, 11, 11)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -560,6 +602,14 @@ public class cadastroTarefas extends javax.swing.JFrame {
         setBotoes(1);
     }//GEN-LAST:event_tblTarefasMouseClicked
 
+    private void btnListarPrioridadeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListarPrioridadeActionPerformed
+        atualizarTabelaOrdemPrioridade();
+    }//GEN-LAST:event_btnListarPrioridadeActionPerformed
+
+    private void btnListarAlfabeticaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListarAlfabeticaActionPerformed
+        atualizarTabela();
+    }//GEN-LAST:event_btnListarAlfabeticaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -600,6 +650,8 @@ public class cadastroTarefas extends javax.swing.JFrame {
     private javax.swing.JButton btnCadastrar;
     private javax.swing.JButton btnDeletar;
     private javax.swing.JButton btnLimpar;
+    private javax.swing.JButton btnListarAlfabetica;
+    private javax.swing.JButton btnListarPrioridade;
     private javax.swing.JComboBox<String> cbPrioridade;
     private javax.swing.JComboBox<String> cbResponsavel;
     private javax.swing.JComboBox<String> cbStatus;

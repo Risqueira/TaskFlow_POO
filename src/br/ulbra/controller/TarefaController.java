@@ -29,6 +29,9 @@ public class TarefaController {
     public List<Tarefa> listar() throws SQLException {
         return dao.listar();
     }
+    public List<Tarefa> listarOrdemPrioridade() throws SQLException {
+        return dao.listarOrdemPrioridade();
+    }
 
     public void atualizar(Tarefa t) throws SQLException {
         dao.atualizar(t);
